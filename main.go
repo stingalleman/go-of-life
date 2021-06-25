@@ -89,13 +89,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	ebiten.SetWindowSize(1440, 900)
+	ebiten.SetWindowSize(2560, 1080)
 	ebiten.SetWindowTitle(fmt.Sprintf("Go Of Life | FPS: %f", ebiten.CurrentFPS()))
 
-	game := &Game{winW: 360, winH: 225, disabled: false, grid: make([][]bool, 360), queue: make([]change, 0)}
+	game := &Game{winW: 2560, winH: 1080, disabled: false, grid: make([][]bool, 2560), queue: make([]change, 0)}
 
 	for i := 0; i < len(game.grid); i++ {
-		game.grid[i] = make([]bool, 225)
+		game.grid[i] = make([]bool, 1080)
 	}
 
 	for w := 0; w < len(game.grid); w++ {
