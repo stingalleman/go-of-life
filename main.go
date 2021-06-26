@@ -13,6 +13,8 @@ import (
 type Game struct {
 	winW     int
 	winH     int
+	gameW    int
+	gameH    int
 	grid     [][]bool
 	queue    []change
 	disabled bool
@@ -25,18 +27,20 @@ type change struct {
 	state  bool
 }
 
+var (
+	cc  bool
+	sum int
+)
+
 func (g *Game) Update() error {
 	g.queue = nil
 	if !g.disabled {
 		grid := g.grid
-		for w := 1; w < g.winW-1; w++ {
-			for h := 1; h < g.winH-1; h++ {
+		for w := 1; w < g.gameW-1; w++ {
+			for h := 1; h < g.gameH-1; h++ {
+				cc = grid[w][h]
 
-				// if w > 1 && w < g.winW-1 {
-				// 	if h > 1 && h < g.winH-1 {
-				cc := grid[w][h]
-
-				sum := 0
+				sum = 0
 				for _, v := range []bool{
 					grid[w+1][h],
 					grid[w+1][h+1],
@@ -84,18 +88,22 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return g.winW, g.winH
+	return g.gameW, g.gameH
 }
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	ebiten.SetWindowSize(2560, 1080)
+
+	game := &Game{winW: 1440, winH: 900, queue: make([]change, 0)}
+	game.gameW = game.winW / 4
+	game.gameH = game.winH / 4
+	game.grid = make([][]bool, game.gameW)
+
+	ebiten.SetWindowSize(game.winW, game.winH)
 	ebiten.SetWindowTitle(fmt.Sprintf("Go Of Life | FPS: %f", ebiten.CurrentFPS()))
 
-	game := &Game{winW: 2560, winH: 1080, disabled: false, grid: make([][]bool, 2560), queue: make([]change, 0)}
-
 	for i := 0; i < len(game.grid); i++ {
-		game.grid[i] = make([]bool, 1080)
+		game.grid[i] = make([]bool, game.gameH)
 	}
 
 	for w := 0; w < len(game.grid); w++ {
