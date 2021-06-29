@@ -106,7 +106,9 @@ func ConwayRules(grid [][]bool, queue []Change, x, y, maxX, maxY int) ([][]bool,
 func Randomgrid(grid [][]bool, queue []Change) ([][]bool, []Change) {
 	for w := 0; w < len(grid); w++ {
 		for h := 0; h < len(grid[w]); h++ {
-			queue = append(queue, Change{Width: w, Height: h, State: rand.Intn(2) == 1})
+			rBool := rand.Intn(2) == 1
+			queue = append(queue, Change{Width: w, Height: h, State: rBool})
+			grid[w][h] = rBool
 		}
 	}
 

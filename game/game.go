@@ -23,20 +23,24 @@ type Game struct {
 	Started  bool
 }
 
-var (
-	cc  bool
-	sum int
-)
-
 func (g *Game) Update() error {
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 		if x >= 0 && x < g.GameW && y >= 0 && y < g.GameH {
-			g.Queue = append(g.Queue, util.Change{Width: x, Height: y, State: true})
+			var state bool
+			if g.Grid[x][y] {
+				state = false
+			} else {
+				state = true
+			}
+
+			g.Queue = append(g.Queue, util.Change{Width: x, Height: y, State: state})
+			g.Grid[x][y] = state
 		}
 	}
 
 	// handle user input
+	// S
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
 		if g.Disabled {
 			g.Disabled = false
@@ -49,12 +53,18 @@ func (g *Game) Update() error {
 		}
 	}
 
+	// R
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		g.Grid, g.Queue = util.ResetgridAndQueue(g.GameW, g.GameH)
-		g.Grid, g.Queue = util.Randomgrid(g.Grid, g.Queue)
 		g.Gen = 0
 	}
 
+	// G
+	if inpututil.IsKeyJustPressed(ebiten.KeyG) {
+		g.Grid, g.Queue = util.Randomgrid(g.Grid, g.Queue)
+	}
+
+	// arrow up/down
 	if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) {
 		g.Sleep += 100
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) {
